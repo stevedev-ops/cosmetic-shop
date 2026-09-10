@@ -23,7 +23,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-['Plus_Jakarta_Sans',sans-serif] bg-[#0b0f19] text-slate-100 min-h-screen flex antialiased selection:bg-rose-500 selection:text-white relative">
+      <body className="font-['Plus_Jakarta_Sans',sans-serif] bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col lg:flex-row antialiased selection:bg-rose-500 selection:text-white relative">
         <Sidebar />
         <main className="flex-1 min-w-0 flex flex-col min-h-screen overflow-y-auto">
           {children}
