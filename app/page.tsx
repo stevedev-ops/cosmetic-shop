@@ -95,6 +95,8 @@ export default function DashboardPage() {
     expiringSoonCount: 0,
   };
 
+  const formatMoney = (val: any) => Number(val || 0).toFixed(2);
+
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       {/* Top Banner & Header */}
@@ -175,9 +177,10 @@ export default function DashboardPage() {
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
+
           <div className="mt-3">
             <div className="text-2xl font-bold font-mono text-white">
-              ${kpis.todaySales.toFixed(2)}
+              ${formatMoney(kpis?.todaySales)}
             </div>
             <div className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
               <span className="text-emerald-400 font-medium">
@@ -243,7 +246,7 @@ export default function DashboardPage() {
           </div>
           <div className="mt-3">
             <div className="text-2xl font-bold font-mono text-emerald-400">
-              ${kpis.totalSales.toFixed(2)}
+              ${formatMoney(kpis?.totalSales)}
             </div>
             <div className="text-xs text-slate-400 mt-1">
               Lifetime boutique register volume
@@ -372,7 +375,7 @@ export default function DashboardPage() {
 
                   <div className="text-right flex-shrink-0">
                     <div className="text-sm font-bold font-mono text-emerald-400">
-                      ${sale.total_amount.toFixed(2)}
+                      ${formatMoney(sale?.total_amount)}
                     </div>
                     <div className="text-[10px] text-slate-500 mt-0.5">
                       {new Date(sale.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

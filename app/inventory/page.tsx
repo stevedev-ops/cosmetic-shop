@@ -425,13 +425,13 @@ export default function InventoryPage() {
 
                       {/* Cost */}
                       <td className="py-3.5 px-3 text-right font-mono text-slate-400">
-                        ${p.cost_price.toFixed(2)}
+                        ${Number(p?.cost_price || 0).toFixed(2)}
                       </td>
 
                       {/* Retail Price + Margin */}
                       <td className="py-3.5 px-3 text-right">
                         <div className="font-mono font-semibold text-white">
-                          ${p.selling_price.toFixed(2)}
+                          ${Number(p?.selling_price || 0).toFixed(2)}
                         </div>
                         <div className="text-[10px] text-emerald-400 font-mono">
                           {margin}% margin

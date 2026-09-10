@@ -178,8 +178,8 @@ export default function CustomersPage() {
               </div>
 
               <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-                <span>Total Visits: <strong className="text-white">{c.total_visits || 0}</strong></span>
-                <span>Lifetime: <strong className="text-emerald-400 font-mono">${(c.total_spent || 0).toFixed(2)}</strong></span>
+                <span>Total Visits: <strong className="text-white">{c?.total_visits || 0}</strong></span>
+                <span>Lifetime: <strong className="text-emerald-400 font-mono">${Number(c?.total_spent || 0).toFixed(2)}</strong></span>
               </div>
             </div>
           ))

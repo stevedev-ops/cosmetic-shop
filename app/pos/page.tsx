@@ -77,6 +77,8 @@ export default function PosPage() {
   // Receipt Modal
   const [completedReceipt, setCompletedReceipt] = useState<any>(null);
 
+  const formatMoney = (val: any) => Number(val || 0).toFixed(2);
+
   const categories = ['All', 'Skincare', 'Makeup', 'Fragrance', 'Haircare', 'Bath & Body'];
 
   // Load products & customers
@@ -220,7 +222,7 @@ export default function PosPage() {
     if (paymentMethod === 'CASH') {
       const tendered = Number(cashTendered);
       if (!tendered || tendered < totalAmount) {
-        setCheckoutError(`Cash tendered ($${tendered || 0}) is less than total amount ($${totalAmount.toFixed(2)}).`);
+        setCheckoutError(`Cash tendered ($${tendered || 0}) is less than total amount ($${formatMoney(totalAmount)}).`);
         return;
       }
     }
@@ -421,7 +423,7 @@ export default function PosPage() {
                     <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between">
                       <div>
                         <div className="text-sm font-bold font-mono text-white">
-                          ${p.selling_price.toFixed(2)}
+                          ${formatMoney(p?.selling_price)}
                         </div>
                         <div className="text-[10px] text-slate-400">
                           {isOutOfStock ? (
@@ -516,13 +518,13 @@ export default function PosPage() {
                     </p>
                   </div>
                   <span className="text-xs font-mono font-bold text-slate-100">
-                    ${(item.unitPrice * item.quantity).toFixed(2)}
+                    ${formatMoney(item.unitPrice * item.quantity)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-800">
                   <span className="text-[11px] text-slate-400 font-mono">
-                    ${item.unitPrice.toFixed(2)} ea
+                    ${formatMoney(item.unitPrice)} ea
                   </span>
                   <div className="flex items-center gap-2">
                     <button
@@ -553,7 +555,7 @@ export default function PosPage() {
           <div className="space-y-1.5 text-xs text-slate-400 font-medium">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span className="font-mono text-slate-200">${subtotal.toFixed(2)}</span>
+              <span className="font-mono text-slate-200">${formatMoney(subtotal)}</span>
             </div>
 
             {/* Discount input */}
@@ -572,13 +574,13 @@ export default function PosPage() {
 
             <div className="flex justify-between">
               <span>Tax (8%)</span>
-              <span className="font-mono text-slate-200">${taxAmount.toFixed(2)}</span>
+              <span className="font-mono text-slate-200">${formatMoney(taxAmount)}</span>
             </div>
 
             <div className="pt-2 border-t border-slate-800 flex justify-between items-baseline">
               <span className="text-sm font-bold text-white">Total Due</span>
               <span className="text-xl font-bold font-mono text-rose-300">
-                ${totalAmount.toFixed(2)}
+                ${formatMoney(totalAmount)}
               </span>
             </div>
           </div>
@@ -598,7 +600,7 @@ export default function PosPage() {
             }`}
           >
             <Banknote className="w-4 h-4" />
-            <span>Process Payment (${totalAmount.toFixed(2)})</span>
+            <span>Process Payment (${formatMoney(totalAmount)})</span>
           </button>
         </div>
       </div>
@@ -650,7 +652,7 @@ export default function PosPage() {
             <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center space-y-1">
               <span className="text-xs text-slate-400 uppercase tracking-wider">Total Amount</span>
               <div className="text-3xl font-extrabold font-mono text-white">
-                ${totalAmount.toFixed(2)}
+                ${formatMoney(totalAmount)}
               </div>
             </div>
 
@@ -695,7 +697,7 @@ export default function PosPage() {
                 <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between text-xs">
                   <span className="text-slate-400">Change Due:</span>
                   <span className={`font-mono text-base font-bold ${changeDue > 0 ? 'text-emerald-400' : 'text-slate-300'}`}>
-                    ${changeDue.toFixed(2)}
+                    ${formatMoney(changeDue)}
                   </span>
                 </div>
               </div>
@@ -767,7 +769,7 @@ export default function PosPage() {
                       {item.productName} ({item.quantity}x)
                     </span>
                     <span className="font-semibold">
-                      ${(item.unitPrice * item.quantity).toFixed(2)}
+                      ${formatMoney(item.unitPrice * item.quantity)}
                     </span>
                   </div>
                 ))}
@@ -777,21 +779,21 @@ export default function PosPage() {
               <div className="space-y-1 text-[11px]">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
-                  <span>${completedReceipt.subtotal.toFixed(2)}</span>
+                  <span>${formatMoney(completedReceipt?.subtotal)}</span>
                 </div>
                 {completedReceipt.discountAmount > 0 && (
                   <div className="flex justify-between text-rose-600">
                     <span>Discount:</span>
-                    <span>-${completedReceipt.discountAmount.toFixed(2)}</span>
+                    <span>-${formatMoney(completedReceipt?.discountAmount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span>Tax (8%):</span>
-                  <span>${completedReceipt.taxAmount.toFixed(2)}</span>
+                  <span>${formatMoney(completedReceipt?.taxAmount)}</span>
                 </div>
                 <div className="flex justify-between font-bold text-xs pt-1 border-t border-slate-300">
                   <span>TOTAL:</span>
-                  <span>${completedReceipt.totalAmount.toFixed(2)}</span>
+                  <span>${formatMoney(completedReceipt?.totalAmount)}</span>
                 </div>
                 <div className="flex justify-between text-[10px] text-slate-600 pt-1">
                   <span>Payment Method:</span>
@@ -801,11 +803,11 @@ export default function PosPage() {
                   <>
                     <div className="flex justify-between text-[10px] text-slate-600">
                       <span>Cash Tendered:</span>
-                      <span>${completedReceipt.cashTendered.toFixed(2)}</span>
+                      <span>${formatMoney(completedReceipt?.cashTendered)}</span>
                     </div>
                     <div className="flex justify-between text-[10px] font-bold text-slate-800">
                       <span>Change:</span>
-                      <span>${completedReceipt.changeDue.toFixed(2)}</span>
+                      <span>${formatMoney(completedReceipt?.changeDue)}</span>
                     </div>
                   </>
                 )}

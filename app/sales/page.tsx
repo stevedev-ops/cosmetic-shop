@@ -16,6 +16,7 @@ import {
   CheckCircle2,
   Lock,
 } from 'lucide-react';
+import { getClientSales } from '@/lib/store';
 
 export default function SalesPage() {
   const [sales, setSales] = useState<any[]>([]);
@@ -30,20 +31,32 @@ export default function SalesPage() {
   const [closingNotes, setClosingNotes] = useState('');
   const [closingShift, setClosingShift] = useState(false);
 
+  const formatMoney = (val: any) => Number(val || 0).toFixed(2);
+
   const fetchSalesAndShifts = async () => {
     try {
       setLoading(true);
       const [salesRes, shiftRes] = await Promise.all([
-        fetch('/api/sales?limit=50'),
-        fetch('/api/shifts'),
+        fetch('/api/sales?limit=50').catch(() => null),
+        fetch('/api/shifts').catch(() => null),
       ]);
-      const salesJson = await salesRes.json();
-      const shiftJson = await shiftRes.json();
-
-      if (salesJson.success) setSales(salesJson.sales);
-      if (shiftJson.success) setShiftData(shiftJson);
+      let sLoaded = false;
+      if (salesRes && salesRes.ok) {
+        const salesJson = await salesRes.json();
+        if (salesJson.success && salesJson.sales?.length > 0) {
+          setSales(salesJson.sales);
+          sLoaded = true;
+        }
+      }
+      if (shiftRes && shiftRes.ok) {
+        const shiftJson = await shiftRes.json();
+        if (shiftJson.success) setShiftData(shiftJson);
+      }
+      if (!sLoaded) {
+        setSales(getClientSales());
+      }
     } catch (e) {
-      console.error(e);
+      setSales(getClientSales());
     } finally {
       setLoading(false);
     }
@@ -114,7 +127,7 @@ export default function SalesPage() {
         {activeShift && (
           <button
             onClick={() => {
-              setCountedCash(expectedDrawerCash.toFixed(2));
+              setCountedCash(formatMoney(expectedDrawerCash));
               setIsCloseShiftOpen(true);
             }}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-rose-300 font-semibold text-xs border border-rose-500/30 transition-colors shadow-sm"
@@ -136,21 +149,21 @@ export default function SalesPage() {
 
           <div>
             <span className="text-[11px] text-slate-400 uppercase font-medium tracking-wider">Opening Cash Float</span>
-            <p className="text-xl font-bold font-mono text-slate-200 mt-1">${activeShift.opening_float.toFixed(2)}</p>
+            <p className="text-xl font-bold font-mono text-slate-200 mt-1">${formatMoney(activeShift?.opening_float)}</p>
             <p className="text-[10px] text-slate-500">Base drawer change</p>
           </div>
 
           <div>
             <span className="text-[11px] text-slate-400 uppercase font-medium tracking-wider">Shift Sales Total</span>
-            <p className="text-xl font-bold font-mono text-emerald-400 mt-1">${shiftSummary.totalSales.toFixed(2)}</p>
+            <p className="text-xl font-bold font-mono text-emerald-400 mt-1">${formatMoney(shiftSummary?.totalSales)}</p>
             <p className="text-[10px] text-slate-400">
-              Cash: ${shiftSummary.cashSales.toFixed(2)} | Card: ${shiftSummary.cardSales.toFixed(2)}
+              Cash: ${formatMoney(shiftSummary?.cashSales)} | Card: ${formatMoney(shiftSummary?.cardSales)}
             </p>
           </div>
 
           <div>
             <span className="text-[11px] text-slate-400 uppercase font-medium tracking-wider">Expected Cash in Drawer</span>
-            <p className="text-xl font-bold font-mono text-rose-300 mt-1">${expectedDrawerCash.toFixed(2)}</p>
+            <p className="text-xl font-bold font-mono text-rose-300 mt-1">${formatMoney(expectedDrawerCash)}</p>
             <p className="text-[10px] text-slate-500">Float + Cash sales received</p>
           </div>
         </div>
@@ -232,10 +245,10 @@ export default function SalesPage() {
                       </span>
                     </td>
                     <td className="py-3.5 px-3 text-right font-mono text-slate-400">
-                      ${s.subtotal.toFixed(2)}
+                      ${formatMoney(s?.subtotal)}
                     </td>
                     <td className="py-3.5 px-4 text-right font-mono font-bold text-emerald-400 text-sm">
-                      ${s.total_amount.toFixed(2)}
+                      ${formatMoney(s?.total_amount)}
                     </td>
                     <td className="py-3.5 px-4 text-center">
                       <button
@@ -280,21 +293,21 @@ export default function SalesPage() {
               <div className="space-y-1 text-[11px]">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
-                  <span>${activeReceipt.subtotal.toFixed(2)}</span>
+                  <span>${formatMoney(activeReceipt?.subtotal)}</span>
                 </div>
                 {activeReceipt.discount_amount > 0 && (
                   <div className="flex justify-between text-rose-600">
                     <span>Discount:</span>
-                    <span>-${activeReceipt.discount_amount.toFixed(2)}</span>
+                    <span>-${formatMoney(activeReceipt?.discount_amount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span>Tax:</span>
-                  <span>${activeReceipt.tax_amount.toFixed(2)}</span>
+                  <span>${formatMoney(activeReceipt?.tax_amount)}</span>
                 </div>
                 <div className="flex justify-between font-bold text-xs pt-1 border-t border-slate-300">
                   <span>TOTAL:</span>
-                  <span>${activeReceipt.total_amount.toFixed(2)}</span>
+                  <span>${formatMoney(activeReceipt?.total_amount)}</span>
                 </div>
                 <div className="flex justify-between text-[10px] text-slate-600 pt-1">
                   <span>Method:</span>
@@ -336,15 +349,15 @@ export default function SalesPage() {
             <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1.5">
               <div className="flex justify-between text-slate-400">
                 <span>Opening Cash Float:</span>
-                <span className="font-mono text-white">${activeShift.opening_float.toFixed(2)}</span>
+                <span className="font-mono text-white">${formatMoney(activeShift?.opening_float)}</span>
               </div>
               <div className="flex justify-between text-slate-400">
                 <span>Total Cash Sales:</span>
-                <span className="font-mono text-emerald-400">+${shiftSummary.cashSales.toFixed(2)}</span>
+                <span className="font-mono text-emerald-400">+{formatMoney(shiftSummary?.cashSales)}</span>
               </div>
               <div className="flex justify-between font-semibold text-slate-200 pt-1 border-t border-slate-800">
                 <span>Expected Drawer Total:</span>
-                <span className="font-mono text-rose-300">${expectedDrawerCash.toFixed(2)}</span>
+                <span className="font-mono text-rose-300">${formatMoney(expectedDrawerCash)}</span>
               </div>
             </div>
 
@@ -372,7 +385,7 @@ export default function SalesPage() {
                         : 'text-amber-400'
                     }`}
                   >
-                    ${(Number(countedCash) - expectedDrawerCash).toFixed(2)}
+                    ${formatMoney(Number(countedCash) - expectedDrawerCash)}
                   </span>
                 </div>
               )}
