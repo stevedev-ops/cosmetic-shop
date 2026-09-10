@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0f1117;
+  --foreground: #f8fafc;
+  --card-bg: rgba(26, 31, 46, 0.75);
+  --card-border: rgba(244, 114, 182, 0.15);
+  --accent-gold: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-blush: #fb7185;
+  --accent-champagne: #fef08a;
+}
+
+body {
+  color: var(--foreground);
+  background-color: #0b0f19;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(244, 63, 94, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.06) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(147, 51, 234, 0.05) 0px, transparent 50%);
+  min-height: 100vh;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* Custom modern scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 63, 94, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 63, 94, 0.6);
+}
+
+/* Glassmorphic cards */
+.glass-panel {
+  background: rgba(19, 24, 38, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel-hover:hover {
+  border-color: rgba(244, 63, 94, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.08);
+}
+
+/* Receipt styles for thermal printer simulation */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    color: #000 !important;
+    background: #fff !important;
+  }
+}
